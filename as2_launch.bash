@@ -20,7 +20,7 @@ source ./utils/launch_tools.bash
 
 new_session $drone_namespace
 
-new_window 'RTPS interface' "micrortps_agent -t UDP -n $drone_namespace"
+new_window 'RTPS interface' "micrortps_agent  -d /dev/ttyUSB0 -n $drone_namespace"
 
 new_window 'platform' "ros2 launch as2_platform_pixhawk pixhawk_launch.py \
     namespace:=$drone_namespace \
@@ -55,3 +55,11 @@ then
         namespace:=$drone_namespace \
         use_sim_time:=$use_sim_time"
 fi
+
+new_window 'keyboard_teleoperation' "ros2 launch as2_keyboard_teleoperation as2_keyboard_teleoperation_launch.py \
+    namespace:=$drone_namespace \
+    use_sim_time:=$use_sim_time \
+    verbose:=true"
+
+new_window 'alphanumeric_viewer' "ros2 run as2_alphanumeric_viewer as2_alphanumeric_viewer_node \
+    --ros-args -r  __ns:=/$drone_namespace"
