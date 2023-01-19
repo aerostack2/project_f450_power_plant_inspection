@@ -7,7 +7,7 @@ fi
 
 # Arguments
 drone_namespace=$1
-use_sim_time=true
+use_sim_time=false
 controller="speed_controller" # "differential_flatness" or "speed_controller"
 behavior_type="position"
 
@@ -47,7 +47,9 @@ new_window 'behaviors' "ros2 launch as2_behaviors_motion motion_behaviors_launch
     follow_path_plugin_name:=follow_path_plugin_$behavior_type \
     goto_plugin_name:=goto_plugin_$behavior_type \
     takeoff_plugin_name:=takeoff_plugin_$behavior_type \
-    land_plugin_name:=land_plugin_speed"
+    land_plugin_name:=land_plugin_speed \
+    goto_threshold:=1.0 \
+    takeoff_threshold:=0.5"
 
 if [[ "$behavior_type" == "trajectory" ]]
 then
@@ -55,11 +57,3 @@ then
         namespace:=$drone_namespace \
         use_sim_time:=$use_sim_time"
 fi
-
-new_window 'keyboard_teleoperation' "ros2 launch as2_keyboard_teleoperation as2_keyboard_teleoperation_launch.py \
-    namespace:=$drone_namespace \
-    use_sim_time:=$use_sim_time \
-    verbose:=true"
-
-new_window 'alphanumeric_viewer' "ros2 run as2_alphanumeric_viewer as2_alphanumeric_viewer_node \
-    --ros-args -r  __ns:=/$drone_namespace"
